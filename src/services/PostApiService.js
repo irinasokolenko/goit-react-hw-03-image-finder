@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '31107721-7ee60bad5b686af5fdf0a833c';
+const API_KEY = '38738030-23ac50ff7cd7e0966ea3a48de';
 
 export default class PostsApiService {
   constructor() {
