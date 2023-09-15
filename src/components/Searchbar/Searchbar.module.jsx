@@ -54,5 +54,5 @@ export const Input = styled.input`
 
   border-radius: 12px;
 
-  background: #2a3c44;
+  background: #fff;
 `;
