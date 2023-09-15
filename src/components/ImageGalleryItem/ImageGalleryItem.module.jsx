@@ -18,8 +18,8 @@ export const GalleryItem = styled.li`
 
   :hover,
   :focus {
-    box-shadow: 0px 1px 14px #19282f;
-    border: 1px solid #f9f9f9;
+    box-shadow: 0px 1px 14px #BDB6BF;
+    border: 1px solid #BDB6BF;
   }
 `;
 export const GalleryImg = styled.img`
