@@ -10,8 +10,8 @@ export const GalleryItem = styled.li`
 
   border-radius: 25px;
 
-  background: #30444e;
-  border: 1px solid #30444e;
+  background: #BDB6BF;
+  border: 1px solid #BDB6BF;
 
   transition: box-shadow 500ms cubic-bezier(0.4, 0, 0.2, 1);
   transition: border 250ms cubic-bezier(0.4, 0, 0.2, 1);
