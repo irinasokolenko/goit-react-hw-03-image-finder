@@ -10,7 +10,7 @@ export const ButtonLoad = styled.button`
 
   border-radius: 12px;
 
-  background: linear-gradient(180deg, #40df9f 0%, #3ed598 100%);
+  background: linear-gradient(180deg, #BDB6BF 0%, #BDB6BF 100%);
   box-shadow: 0px 2px 4px rgba(15, 218, 137, 0.3);
 
   transition: background 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -22,7 +22,7 @@ export const ButtonLoad = styled.button`
 
   // padding: 8px 16px;
   // border-radius: 2px;
-  // background-color: #3f51b5;
+  // background-color: #BDB6BF;
   // transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
   // text-align: center;
   // display: inline-block;
