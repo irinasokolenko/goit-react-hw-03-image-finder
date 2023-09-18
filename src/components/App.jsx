@@ -35,7 +35,7 @@ export class App extends Component {
       prevState.searchQuery !== this.state.searchQuery ||
       prevState.galleryPage !== this.state.galleryPage
     ) {
-      this.addgalleryItems();
+      this.fetchGalleryItems(nextQuery, nextPage);
     }
   }
 
@@ -56,11 +56,13 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      const currentData = [...this.state.galleryItems, ...newData];
+      //const currentData = [...this.state.galleryItems, ...newData];
 
       this.setState(prevState => ({
         galleryItems: [...prevState.galleryItems, ...newData],
-      }));
+        loadMore: this.state.page < Math.ceil(...newData / 12 )
+         }));
+      
 
       if (!data.totalHits) {
         this.setState({ loading: false, error: true });
@@ -69,14 +71,14 @@ export class App extends Component {
         );
       }
 
-      if (currentData.length >= data.totalHits) {
-        this.setState({
-          loading: false,
-          isButtonShow: false,
-          error: false,
-        });
-        return;
-      }
+      // if (currentData.length >= data.totalHits) {
+      //   this.setState({
+      //     loading: false,
+      //     isButtonShow: false,
+      //     error: false,
+      //   });
+      //   return;
+      // }
 
       if (nextPage === 1) {
         toast.success(`Hooray! We found ${postApiService.hits} images.`);
@@ -94,7 +96,7 @@ export class App extends Component {
     this.setState({ searchQuery });
     //this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
      if (searchQuery === 1);
-
+  }
   onLoadMore = () => {
     this.setState(prevState => ({
       galleryPage: prevState.galleryPage + 1,
@@ -103,7 +105,6 @@ export class App extends Component {
 
   render() {
     const { galleryItems, loading, isButtonShow, error } = this.state;
-
     return (
       <AppContent>
         <Searchbar onSubmit={this.handleFormSubmit} />
@@ -113,10 +114,9 @@ export class App extends Component {
         {loading && <Loader />}
         {isButtonShow && <Button onClick={this.onLoadMore} />}
 
-        {/* Additions  */}
+       
         <ToastContainer autoClose={3000} theme="dark" />
       </AppContent>
     );
   }
-}
-     
+  }
