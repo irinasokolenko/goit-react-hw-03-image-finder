@@ -16,28 +16,22 @@ const postApiService = new PostsApiService();
 
 export class App extends Component {
   state = {
-    searchQuery: ``,
-    galleryItems: [],
-    galleryPage: 1,
+    searchQuery: ``,//хранит запрос для поиска
+    galleryItems: [],//хранит загруженые изображения
+    galleryPage: 1,//хранит текущий номер страницы
 
-    loading: false,
-    isButtonShow: false,
-    error: true,
+    loading: false,//индикатор загрузки изображений
+    isButtonShow: false,//кнопка
+    error: true,//хранит сообщение об ошибке
+    totalPages: 0, // хранит общее количество страниц
   };
-
+//метод жизненого цикла (при обновлении компоненкта)
   componentDidUpdate(_, prevState) {
-    const prevQuery = prevState.searchQuery;
-    const nextQuery = this.state.searchQuery;
-    const prevPage = prevState.galleryPage;
-    const nextPage = this.state.galleryPage;
-
-    if (prevQuery !== nextQuery) {
-      this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
-      if (nextPage === 1) {
-        this.fetchGalleryItems(nextQuery, nextPage);
-      }
-    } else if (prevPage !== nextPage) {
-      this.fetchGalleryItems(nextQuery, nextPage);
+    if (
+      prevState.searchQuery !== this.state.searchQuery ||
+      prevState.galleryPage !== this.state.galleryPage
+    ) {
+      this.addgalleryItems();
     }
   }
 
@@ -58,7 +52,7 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      const currentData = [...this.state.galleryItems, ...newData];
+     
 
       this.setState(prevState => ({
         galleryItems: [...prevState.galleryItems, ...newData],
@@ -71,14 +65,7 @@ export class App extends Component {
         );
       }
 
-      if (currentData.length >= data.totalHits) {
-        this.setState({
-          loading: false,
-          isButtonShow: false,
-          error: false,
-        });
-        return;
-      }
+      
 
       if (nextPage === 1) {
         toast.success(`Hooray! We found ${postApiService.hits} images.`);
@@ -93,7 +80,9 @@ export class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery });
+    this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
+    if (searchQuery === 1);
+    
   };
 
   onLoadMore = () => {
