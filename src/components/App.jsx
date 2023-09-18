@@ -31,13 +31,11 @@ export class App extends Component {
     const prevPage = prevState.galleryPage;
     const nextPage = this.state.galleryPage;
 
-    if (prevQuery !== nextQuery) {
-      this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
-      if (nextPage === 1) {
-        this.fetchGalleryItems(nextQuery, nextPage);
-      }
-    } else if (prevPage !== nextPage) {
-      this.fetchGalleryItems(nextQuery, nextPage);
+    if (
+      prevState.searchQuery !== this.state.searchQuery ||
+      prevState.galleryPage !== this.state.galleryPage
+    ) {
+      this.addgalleryItems();
     }
   }
 
@@ -94,7 +92,8 @@ export class App extends Component {
 
   handleFormSubmit = searchQuery => {
     this.setState({ searchQuery });
-  };
+    //this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
+     if (searchQuery === 1);
 
   onLoadMore = () => {
     this.setState(prevState => ({
@@ -120,3 +119,4 @@ export class App extends Component {
     );
   }
 }
+     
