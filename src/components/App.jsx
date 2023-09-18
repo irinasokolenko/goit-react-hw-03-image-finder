@@ -65,7 +65,7 @@ export class App extends Component {
           galleryItems: [prevState.galleryItems, ...newData],
           loadMore: this.state.page < Math.ceil(totalHits / 12 )
          }))
-      }));
+      });
 
       if (!data.totalHits) {
         this.setState({ loading: false, error: true });
@@ -116,4 +116,3 @@ export class App extends Component {
       </AppContent>
     );
   }
-}
