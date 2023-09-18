@@ -32,9 +32,9 @@ export class App extends Component {
     const nextPage = this.state.galleryPage;
 
     if (prevQuery !== nextQuery) {
-      this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
+      
       if (nextPage === 1) {
-        this.fetchGalleryItems(nextQuery, nextPage);
+        
       }
     } else if (prevPage !== nextPage) {
       this.fetchGalleryItems(nextQuery, nextPage);
@@ -58,11 +58,14 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      const currentData = [...this.state.galleryItems, ...newData];
+      
 
-      this.setState(prevState => ({
-        galleryItems: [...prevState.galleryItems, ...newData],
-      }));
+      
+      this.steState(prev =>({
+          galleryItems: [prevState.galleryItems, ...newData],
+          loadMore: this.state.page < Math.ceil(totalHits / 12 )
+         }))
+      });
 
       if (!data.totalHits) {
         this.setState({ loading: false, error: true });
@@ -70,53 +73,3 @@ export class App extends Component {
           'Sorry, there are no images matching your search query. Please try again.'
         );
       }
-
-      if (currentData.length >= data.totalHits) {
-        this.setState({
-          loading: false,
-          isButtonShow: false,
-          error: false,
-        });
-        return;
-      }
-
-      if (nextPage === 1) {
-        toast.success(`Hooray! We found ${postApiService.hits} images.`);
-      }
-
-      this.setState({
-        loading: false,
-        isButtonShow: true,
-        error: false,
-      });
-    });
-  };
-
-  handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery });
-  };
-
-  onLoadMore = () => {
-    this.setState(prevState => ({
-      galleryPage: prevState.galleryPage + 1,
-    }));
-  };
-
-  render() {
-    const { galleryItems, loading, isButtonShow, error } = this.state;
-
-    return (
-      <AppContent>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-
-        {error && <h2>Please, enter search word!</h2>}
-        {!error && <ImageGallery galleryItems={galleryItems} />}
-        {loading && <Loader />}
-        {isButtonShow && <Button onClick={this.onLoadMore} />}
-
-        {/* Additions  */}
-        <ToastContainer autoClose={3000} theme="dark" />
-      </AppContent>
-    );
-  }
-}
