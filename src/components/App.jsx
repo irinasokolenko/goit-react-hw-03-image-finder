@@ -32,9 +32,9 @@ export class App extends Component {
     const nextPage = this.state.galleryPage;
 
     if (prevQuery !== nextQuery) {
-      
+      this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
       if (nextPage === 1) {
-        
+        this.fetchGalleryItems(nextQuery, nextPage);
       }
     } else if (prevPage !== nextPage) {
       this.fetchGalleryItems(nextQuery, nextPage);
@@ -58,14 +58,11 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      
+      const currentData = [...this.state.galleryItems, ...newData];
 
-      
-      this.steState(prev =>({
-          galleryItems: [prevState.galleryItems, ...newData],
-          loadMore: this.state.page < Math.ceil(totalHits / 12 )
-         }))
-      });
+      this.setState(prevState => ({
+        galleryItems: [...prevState.galleryItems, ...newData],
+      }));
 
       if (!data.totalHits) {
         this.setState({ loading: false, error: true });
@@ -74,7 +71,14 @@ export class App extends Component {
         );
       }
 
-      
+      if (currentData.length >= data.totalHits) {
+        this.setState({
+          loading: false,
+          isButtonShow: false,
+          error: false,
+        });
+        return;
+      }
 
       if (nextPage === 1) {
         toast.success(`Hooray! We found ${postApiService.hits} images.`);
@@ -89,7 +93,6 @@ export class App extends Component {
   };
 
   handleFormSubmit = searchQuery => {
-    this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
     this.setState({ searchQuery });
   };
 
@@ -116,3 +119,4 @@ export class App extends Component {
       </AppContent>
     );
   }
+}
