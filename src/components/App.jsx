@@ -48,8 +48,9 @@ export class App extends Component {
 
        this.setState(prevState => ({
         galleryItems: [...prevState.galleryItems, ...newData],
-        loadMore: this.state.page < Math.ceil(...newData / 12 )
+        //loadMore: this.state.page < Math.ceil(...newData / 12 )
       }));
+     
 
 
    if (!data.totalHits) {
