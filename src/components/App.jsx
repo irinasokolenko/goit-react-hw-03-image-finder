@@ -8,7 +8,7 @@ import PostsApiService from 'services/PostApiService';
 import Searchbar from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
-import { Loader } from 'components/Loader/Loader';
+//import { Loader } from 'components/Loader/Loader';
 
 import { AppContent } from './App.module';
 
