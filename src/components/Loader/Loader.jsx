@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vortex } from 'react-loader-spinner';
-import { LoadWrapper } from './Loader.styled'
+import { ModalContent, Overlay } from '../Modal/Modal.module'
 
 const Loader = () => {
   return (
