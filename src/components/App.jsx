@@ -114,7 +114,7 @@ export class App extends Component {
         {loading && <Loader />}
         {isButtonShow && <Button onClick={this.onLoadMore} />}
 
-        {/* Additions  */}
+       
         <ToastContainer autoClose={3000} theme="dark" />
       </AppContent>
     );
