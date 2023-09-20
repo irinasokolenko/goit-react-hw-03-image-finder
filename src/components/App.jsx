@@ -1,122 +1,103 @@
-import { Component } from 'react';
-
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import PostsApiService from 'services/PostApiService';
-
-import Searchbar from './Searchbar/Searchbar';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Button } from 'components/Button/Button';
-import { Loader } from 'components/Loader/Loader';
-
-import { AppContent } from './App.module';
-
-const postApiService = new PostsApiService();
-
-export class App extends Component {
+class App extends Component {
   state = {
-    searchQuery: ``,
-    galleryItems: [],
-    galleryPage: 1,
-
-    loading: false,
-    isButtonShow: false,
-    error: true,
+    images: [],
+    isLoading: false,
+    error: null,
+    query: '',
+    page: 1,
+    showModal: false,
+    selectedImage: null,
+    isLastPage: false,
   };
 
-  componentDidUpdate(_, prevState) {
-    const prevQuery = prevState.searchQuery;
-    const nextQuery = this.state.searchQuery;
-    const prevPage = prevState.galleryPage;
-    const nextPage = this.state.galleryPage;
+componentDidUpdate(_prevProps, prevState) { 
+  if (prevState.query !== this.state.query) {       
+      this.setState({ images: [], page: 1, isLastPage: false }, () => {
+  this.fetchImages();
+});
+    }  
+}
 
-    if (
-      prevState.searchQuery !== this.state.searchQuery ||
-      prevState.galleryPage !== this.state.galleryPage
-    ) {
-      this.fetchGalleryItems(nextQuery, nextPage);
-    }
-  }
+  fetchImages = () => {
+    const { query, page } = this.state;
+    const API_KEY = '34187261-edb3bdfe414ee3b7adebeccc5';
 
-  fetchGalleryItems = (nextQuery, nextPage) => {
-    this.setState({ loading: true, error: false });
+    this.setState({ isLoading: true });
 
-    postApiService.query = nextQuery;
-    postApiService.page = nextPage;
+    axios
+      .get(
+        `https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+      )
+      .then(response => {
+        const { hits, totalHits } = response.data;
 
-    postApiService.fetchPost().then(data => {
-      postApiService.hits = data.totalHits;
+        if (hits.length === 0) { 
+        return toast('Sorry, there are no images matching your request...', {position: toast.POSITION.TOP_CENTER, icon: "🤔"});
+        }
 
-      const newData = data.hits.map(
-        ({ id, tags, webformatURL, largeImageURL }) => ({
-          id,
-          tags,
-          webformatURL,
-          largeImageURL,
-        })
-      );
-      //const currentData = [...this.state.galleryItems, ...newData];
-
-      this.setState(prevState => ({
-        galleryItems: [...prevState.galleryItems, ...newData],
-        //loadMore: this.state.page < Math.ceil(...newData / 12 )
-         }));
-      
-
-      if (!data.totalHits) {
-        this.setState({ loading: false, error: true });
-        return toast.warn(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-
-      // if (currentData.length >= data.totalHits) {
-      //   this.setState({
-      //     loading: false,
-      //     isButtonShow: false,
-      //     error: false,
-      //   });
-      //   return;
-      // }
-
-      if (nextPage === 1) {
-        toast.success(`Hooray! We found ${postApiService.hits} images.`);
-      }
-
-      this.setState({
-        loading: false,
-        isButtonShow: true,
-        error: false,
-      });
-    });
-  };
-
-  handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery });
-    //this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
-     if (searchQuery === 1);
-  }
-  onLoadMore = () => {
-    this.setState(prevState => ({
-      galleryPage: prevState.galleryPage + 1,
+        const modifiedHits = hits.map(({ id, tags, webformatURL, largeImageURL }) => ({
+      id,
+      tags,
+      webformatURL,
+      largeImageURL
     }));
+
+        this.setState(prevState => ({
+          images: [...prevState.images, ...modifiedHits],
+          page: prevState.page + 1,
+          isLastPage: prevState.images.length + modifiedHits.length >= totalHits,
+        }));
+      })
+      .catch(error => {
+        this.setState({ error: error.message });
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+  };
+
+  handleSearchSubmit = query => {
+      if (this.state.query === query) {
+      return;
+    }
+  this.setState({ query: query, page: 1, images: [], error: null, isLastPage: false });
+};
+
+  handleImageClick = image => {
+    this.setState({ selectedImage: image, showModal: true });
+    document.body.style.overflow = 'hidden';
+  };
+
+  handleModalClose = () => {
+    this.setState({ selectedImage: null, showModal: false });
+    document.body.style.overflow = 'auto';
   };
 
   render() {
-    const { galleryItems, loading, isButtonShow, error } = this.state;
+    const { images, isLoading, error, showModal, selectedImage, isLastPage } = this.state;
+
     return (
-      <AppContent>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+      <AppDiv>
+        <ToastContainer transition={Flip}/>
+        <Searchbar onSubmit={this.handleSearchSubmit} />
 
-        {error && <h2>Please, enter search word!</h2>}
-        {!error && <ImageGallery galleryItems={galleryItems} />}
-        {loading && <Loader />}
-        {isButtonShow && <Button onClick={this.onLoadMore} />}
+        {error && <p>Error: {error}</p>}
 
-       
-        <ToastContainer autoClose={3000} theme="dark" />
-      </AppContent>
+        <ImageGallery images={images} onItemClick={this.handleImageClick} />
+
+        {isLoading && <Loader />}
+        
+
+        {!isLoading && images.length > 0 && !isLastPage && (
+          <Button onClick={this.fetchImages} />
+        )}
+
+        {showModal && (
+          <Modal image={selectedImage} onClose={this.handleModalClose} />
+        )}
+      </AppDiv>
     );
   }
-  }
+}
+
+export default App;
