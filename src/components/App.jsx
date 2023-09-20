@@ -19,9 +19,9 @@ export class App extends Component {
     error: true,
   };
   componentDidUpdate(_, prevState) {
-    const prevQuery = prevState.searchQuery;
+   // const prevQuery = prevState.searchQuery;
     const nextQuery = this.state.searchQuery;
-    const prevPage = prevState.galleryPage;
+    //const prevPage = prevState.galleryPage;
     const nextPage = this.state.galleryPage;
     if (
       prevState.searchQuery !== this.state.searchQuery ||
