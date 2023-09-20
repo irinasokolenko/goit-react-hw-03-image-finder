@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ImageGalleryLi, ImageGalleryItemImg } from './ImageGalleryItem.styled';
+import { ImageGalleryLi, ImageGalleryItemImg } from './ImageGalleryItem.module';
 
 const ImageGalleryItem = ({ image, onItemClick }) => {
   const handleClick = () => {
