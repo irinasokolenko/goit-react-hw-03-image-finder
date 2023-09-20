@@ -56,11 +56,11 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      const currentData = [...this.state.galleryItems, ...newData];
+      //const currentData = [...this.state.galleryItems, ...newData];
 
       this.setState(prevState => ({
         galleryItems: [...prevState.galleryItems, ...newData],
-        loadMore: this.state.page < Math.ceil(...newData / 12 )
+        //loadMore: this.state.page < Math.ceil(...newData / 12 )
          }));
       
 
