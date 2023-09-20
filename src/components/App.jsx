@@ -8,6 +8,7 @@ import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 import { AppContent } from './App.module';
 const postApiService = new PostsApiService();
+//key:38738030-23ac50ff7cd7e0966ea3a48de;
 export class App extends Component {
   state = {
     searchQuery: ``,
