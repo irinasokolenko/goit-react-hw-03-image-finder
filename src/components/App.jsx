@@ -1,55 +1,41 @@
 import { Component } from 'react';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import PostsApiService from 'services/PostApiService';
-
 import Searchbar from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
-
 import { AppContent } from './App.module';
-
 const postApiService = new PostsApiService();
-const API_KEY = '38738030-23ac50ff7cd7e0966ea3a48de';
 export class App extends Component {
   state = {
     searchQuery: ``,
     galleryItems: [],
     galleryPage: 1,
-
     loading: false,
     isButtonShow: false,
     error: true,
   };
-
   componentDidUpdate(_, prevState) {
     const prevQuery = prevState.searchQuery;
     const nextQuery = this.state.searchQuery;
     const prevPage = prevState.galleryPage;
     const nextPage = this.state.galleryPage;
-
-    if (prevQuery !== nextQuery) {
-      this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
-      if (nextPage === 1) {
-        this.fetchGalleryItems(nextQuery, nextPage);
-      }
-    } else if (prevPage !== nextPage) {
+    if (
+      prevState.searchQuery !== this.state.searchQuery ||
+      prevState.galleryPage !== this.state.galleryPage
+    ) {
       this.fetchGalleryItems(nextQuery, nextPage);
     }
   }
 
   fetchGalleryItems = (nextQuery, nextPage) => {
     this.setState({ loading: true, error: false });
-
     postApiService.query = nextQuery;
     postApiService.page = nextPage;
-
     postApiService.fetchPost().then(data => {
       postApiService.hits = data.totalHits;
-
       const newData = data.hits.map(
         ({ id, tags, webformatURL, largeImageURL }) => ({
           id,
@@ -58,32 +44,31 @@ export class App extends Component {
           largeImageURL,
         })
       );
-      const currentData = [...this.state.galleryItems, ...newData];
+       //const currentData = [...this.state.galleryItems, ...newData];
 
-      this.setState(prevState => ({
+       this.setState(prevState => ({
         galleryItems: [...prevState.galleryItems, ...newData],
+        loadMore: this.state.page < Math.ceil(...newData / 12 )
       }));
 
-      if (!data.totalHits) {
-        this.setState({ loading: false, error: true });
-        return toast.warn(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
 
-      if (currentData.length >= data.totalHits) {
-        this.setState({
-          loading: false,
-          isButtonShow: false,
-          error: false,
-        });
-        return;
-      }
-
+   if (!data.totalHits) {
+     this.setState({ loading: false, error: true });
+     return toast.warn(
+       'Sorry, there are no images matching your search query. Please try again.'
+     );
+   }
+    // if (currentData.length >= data.totalHits) {
+      //   this.setState({
+      //     loading: false,
+      //     isButtonShow: false,
+      //     error: false,
+      //   });
+      //   return;
+      // }
       if (nextPage === 1) {
         toast.success(`Hooray! We found ${postApiService.hits} images.`);
       }
-
       this.setState({
         loading: false,
         isButtonShow: true,
@@ -91,32 +76,29 @@ export class App extends Component {
       });
     });
   };
-
   handleFormSubmit = searchQuery => {
     this.setState({ searchQuery });
-  };
-
-  onLoadMore = () => {
-    this.setState(prevState => ({
-      galleryPage: prevState.galleryPage + 1,
-    }));
-  };
-
-  render() {
-    const { galleryItems, loading, isButtonShow, error } = this.state;
-
-    return (
-      <AppContent>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-
-        {error && <h2>Please, enter search word!</h2>}
-        {!error && <ImageGallery galleryItems={galleryItems} />}
-        {loading && <Loader />}
-        {isButtonShow && <Button onClick={this.onLoadMore} />}
-
-       
-        <ToastContainer autoClose={3000} theme="dark" />
+    //this.setState({ galleryPage: 1, galleryItems: [], isButtonShow: false });
+     if (searchQuery === 1);
+    }
+    onLoadMore = () => {
+      this.setState(prevState => ({
+        galleryPage: prevState.galleryPage + 1,
+      }));
+    };
+  
+    render() {
+      const { galleryItems, loading, isButtonShow, error } = this.state;
+      return (
+        <AppContent>
+          <Searchbar onSubmit={this.handleFormSubmit} />
+          {error && <h2>Please, enter search word!</h2>}
+          {!error && <ImageGallery galleryItems={galleryItems} />}
+          {loading && <Loader />}
+          {isButtonShow && <Button onClick={this.onLoadMore} />}
+          <ToastContainer autoClose={3000} theme="dark" />
       </AppContent>
     );
   }
 }
+  
